@@ -1,13 +1,78 @@
-import React from "react";
-import { FlatList, StyleSheet, Text, Platform } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  Platform,
+  Button,
+  ActivityIndicator,
+  View,
+} from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import HeaderButton from "../../components/HeaderButton";
 import OrderItem from "../../components/shop/OrderItem";
+import Colors from "../../constants/Colors";
+import * as ordersActions from "../../store/actions/orders";
 
 const OrdersScreen = (props) => {
   const orders = useSelector((state) => state.orders.orders);
-  // <Text>{itemData.item.totalAmount}</Text>
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const dispatch = useDispatch();
+
+  const loadOrders = useCallback(async () => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(ordersActions.fetchOrders());
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [dispatch, setIsLoading, setError]);
+
+  useEffect(() => {
+    const willFocusSub = props.navigation.addListener("willFocus", loadOrders);
+    return () => {
+      willFocusSub.remove();
+    };
+  }, [loadOrders]);
+
+  useEffect(() => {
+    loadOrders();
+  }, [dispatch, loadOrders]);
+
+  if (error) {
+    return (
+      <View style={styles.screen}>
+        <Text>An error ocurred!</Text>
+        <Text>{error}</Text>
+        <Button
+          title="Try again"
+          onPress={loadOrders}
+          color={Colors.primaryColor}
+        />
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.screen}>
+        <ActivityIndicator size="large" color={Colors.primaryColor} />
+      </View>
+    );
+  }
+
+  if (!isLoading && orders.length === 0) {
+    return (
+      <View style={styles.screen}>
+        <Text>No products found. Maybe start adding some.</Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={orders}

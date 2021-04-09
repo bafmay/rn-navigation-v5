@@ -10,7 +10,6 @@ import * as productActions from "../../store/actions/products";
 const UserProductsScreen = (props) => {
   const userProducts = useSelector((state) => state.products.userProducts);
   const dispatch = useDispatch();
-
   const editProductHandler = (id) => {
     props.navigation.navigate("EditProductScreen", {
       productId: id,
