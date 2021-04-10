@@ -4,10 +4,11 @@ export const ADD_ORDER = "ADD_ORDER";
 export const GET_ORDER = "GET_ORDER";
 
 export const fetchOrders = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
+      const userId = getState().auth.userId;
       const response = await fetch(
-        "https://rn-complete-guide-92816-default-rtdb.firebaseio.com/orders/u1.json"
+        `https://rn-complete-guide-92816-default-rtdb.firebaseio.com/orders/${userId}.json`
       );
 
       if (!response.ok) {
@@ -37,9 +38,11 @@ export const fetchOrders = () => {
 
 export const addOrder = (cartItems, totalAmount) => {
   const date = new Date();
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
+    const userId = getState().auth.userId;
     const response = await fetch(
-      "https://rn-complete-guide-92816-default-rtdb.firebaseio.com/orders/u1.json",
+      `https://rn-complete-guide-92816-default-rtdb.firebaseio.com/orders/${userId}.json?auth=${token}`,
       {
         method: "POST",
         headers: {

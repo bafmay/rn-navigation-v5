@@ -1,5 +1,13 @@
 import React from "react";
-import { FlatList, Platform, Button, Alert } from "react-native";
+import {
+  FlatList,
+  Platform,
+  Button,
+  Alert,
+  StyleSheet,
+  View,
+  Text,
+} from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useDispatch, useSelector } from "react-redux";
 import HeaderButton from "../../components/HeaderButton";
@@ -28,6 +36,14 @@ const UserProductsScreen = (props) => {
       },
     ]);
   };
+
+  if (userProducts.length === 0) {
+    return (
+      <View style={styles.screen}>
+        <Text>No orders found. Maybe start an order.</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -87,5 +103,13 @@ UserProductsScreen.navigationOptions = (navData) => {
     ),
   };
 };
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export default UserProductsScreen;
