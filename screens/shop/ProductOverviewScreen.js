@@ -35,12 +35,9 @@ const ProductOverviewScreen = (props) => {
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {
-    const willFocusSub = props.navigation.addListener(
-      "willFocus",
-      loadProducts
-    );
+    const unsubscribe = props.navigation.addListener("focus", loadProducts);
     return () => {
-      willFocusSub.remove();
+      unsubscribe();
     };
   }, [loadProducts]);
 
@@ -123,10 +120,10 @@ const ProductOverviewScreen = (props) => {
   );
 };
 
-ProductOverviewScreen.navigationOptions = (navData) => {
+export const screenOptions = (navData) => {
   return {
     headerTitle: "All Products",
-    headerLeft: () => (
+    headerLeft: (props) => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"
@@ -137,7 +134,7 @@ ProductOverviewScreen.navigationOptions = (navData) => {
         />
       </HeaderButtons>
     ),
-    headerRight: () => (
+    headerRight: (props) => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="cart"
