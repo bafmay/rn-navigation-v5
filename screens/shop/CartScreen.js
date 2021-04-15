@@ -25,8 +25,10 @@ const CartScreen = (props) => {
         productPrice: state.cart.items[key].productPrice,
         quantity: state.cart.items[key].quantity,
         sum: state.cart.items[key].sum,
+        productPushToken: state.cart.items[key].pushToken,
       });
     }
+
     return newItems.sort((a, b) => (a.productId > b.productId ? 1 : -1));
   });
   const totalAmount = useSelector((state) => state.cart.totalAmount);
